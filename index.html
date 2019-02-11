@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <title></title>
+    <script src="js/mui.min.js"></script>
+    <link href="css/mui.min.css" rel="stylesheet"/>
+	<link href="css/header.css"rel="stylesheet" />
+    <script type="text/javascript" charset="utf-8">
+      	mui.init();
+		mui.plusReady(function () {
+		   plus.navigator.setStatusBarStyle("light");
+		   plus.navigator.setStatusBarBackground("#c9394a");
+		})
+    </script>
+</head>
+<body>
+	<header class="mui-bar mui-bar-nav header-background">
+		<h1 class="mui-title"><strong>幕信</strong></h1>
+	</header>
+	<nav class="mui-bar mui-bar-tab">
+		<a class="mui-tab-item mui-active" tabindex="0">
+			<span class="mui-icon mui-icon-chatboxes"></span>
+			<span class="mui-tab-label">幕信</span>
+		</a>
+		<a class="mui-tab-item" tabindex="1">
+			<span class="mui-icon mui-icon-person"></span>
+			<span class="mui-tab-label">联系人</span>
+		</a>
+		<a class="mui-tab-item" tabindex="2">
+			<span class="mui-icon mui-icon-search"></span>
+			<span class="mui-tab-label">发现</span>
+		</a>
+		<a class="mui-tab-item" tabindex="3">
+			<span class="mui-icon mui-icon-gear"></span>
+			<span class="mui-tab-label">我的</span>
+		</a>
+	</nav>
+	
+	
+	<script type="application/javascript">
+		var indexWebview = plus.webview.currentWebview();
+		var tabviews = [
+			{
+				pageId : "chatList.html",
+				pageUrl : "chatList.html"
+			},
+			{
+				pageId : "contact.html",
+				pageUrl : "contact.html"
+			},
+			{
+				pageId : "discovery.html",
+				pageUrl : "discovery.html"
+			},
+			{
+				pageId : "me.html",
+				pageUrl : "me.html"
+			}
+		];
+		var styleView = {
+			top : '44px',
+			bottom : '50px'
+		}
+		mui.plusReady(function () {
+			//创建四个子视图
+		    for(var i = 0 ; i < tabviews.length ; i++){
+				var subView = plus.webview.create(tabviews[i].pageUrl,tabviews[i].pageId,styleView);
+				indexWebview.append(subView);
+				subView.hide();
+			}
+			plus.webview.show(tabviews[0].pageId);
+			//批量绑定
+			mui(".mui-bar-tab").on("tap","a",function(){
+				var idx = this.getAttribute("tabindex");
+				for(var i = 0 ; i < tabviews.length ; i++){
+					plus.webview.hide(tabviews[i].pageId);
+				}
+				plus.webview.show(tabviews[idx].pageId);
+			});
+		})
+	</script>
+</body>
+</html>

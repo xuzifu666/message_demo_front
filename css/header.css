@@ -1,0 +1,12 @@
+.header-background{
+	background-color: #c9394a;
+}
+.mui-title{
+	color: white;
+}
+.mui-tab-item.mui-active{
+	color: #C9394A !important;
+}
+.mui-action-back{
+	color: white;
+}

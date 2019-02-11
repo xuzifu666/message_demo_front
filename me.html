@@ -1,0 +1,105 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="css/mui.css" rel="stylesheet" />
+	</head>
+
+	<body>
+		<div class="mui-content">
+		<ul class="mui-table-view">
+			<li class="mui-table-view-cell mui-media">
+				<a href="javascript:;" id="person_img">
+					<span class="mui-pull-right mui-icon mui-icon-arrowright" 
+		            			style="line-height: 42px;color: lightgray;margin-left: 3px;"></span>
+					<img class="mui-media-object mui-pull-right" id="icon" src="image/addfriends.png">
+					<div class="mui-media-body" style="line-height: 44px;">
+						头像
+					</div>
+				</a>
+			</li>
+			<li class="mui-table-view-cell mui-media">
+				<a href="javascript:;">
+					<span class="mui-pull-right mui-icon mui-icon-arrowright" style="line-height: 42px;color: lightgray;margin-left: 3px;"></span>
+					<span id="span_nickname" class="mui-pull-right" 
+		            			style="color: gray;font-size: 14px;line-height: 44px;"></span>
+					<div class="mui-media-body" style="line-height: 44px;">
+						昵称
+					</div>
+				</a>
+			</li>
+			<li class="mui-table-view-cell mui-media">
+				<a href="javascript:;">
+					<span class="mui-pull-right mui-icon mui-icon-arrowright" style="line-height: 42px;color: lightgray;margin-left: 3px;"></span>
+					<img class="mui-media-object mui-pull-right" src="image/qrcode.png" style="max-width: 20px;height: 20px;margin-top: 10px;">
+					<div class="mui-media-body" style="line-height: 44px;">
+						我的二维码
+					</div>
+				</a>
+			</li>
+			<li class="mui-table-view-cell mui-media">
+					<img class="mui-media-object mui-pull-right" src="">
+					<span class="mui-pull-right" style="line-height: 42px;font-size: 14px;color: lightgray;" id="moocId">mooc</span>
+					<div class="mui-media-body" style="line-height: 44px;">
+					    慕信号
+					</div>
+			</li>
+		</ul>
+		<br/>
+		<ul class="mui-table-view">
+			<li class="mui-table-view-cell mui-media" style="text-align: center;">
+				<a href="javascript:;" onclick="logout()">
+					<div class="mui-media-body" style="line-height: 42px;">
+					    退出登录
+					</div>
+				</a>
+			</li>
+		</ul>
+		</div>
+		<script src="js/mui.js"></script>
+		<script src="css/app.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript">
+			mui.init();
+			mui.ready(function () {
+					var userInfo = app.getUserGlobalInfo();
+					var currentWebview = plus.webview.currentWebview();
+					currentWebview.addEventListener("show",function(){
+						refreshView();
+					});
+					document.getElementById("person_img").addEventListener("tap",function(){
+						toPersonImgView();
+					});
+					if(app.isNotNull(userInfo.faceImageBig)){
+						refreshView();
+					}
+					
+					window.addEventListener("refresh",function(){
+						var userInfo = app.getUserGlobalInfo();
+						var imageUrl = app.imgServerUrl + userInfo.faceImage;
+						console.info("更新图片的地址" + imageUrl);
+						document.getElementById("icon").src = imageUrl;
+					});
+			});
+			function toPersonImgView(){
+				mui.openWindow("person_img.html","person_img.html");
+				
+			}
+			function refreshView(){
+				var userInfo = app.getUserGlobalInfo();
+				var nickname = userInfo.nickname;
+				var moocId = userInfo.id;
+				document.getElementById("span_nickname").innerHTML = nickname;
+				document.getElementById("moocId").innerHTML = moocId;
+				document.getElementById("icon").src = app.imgServerUrl + userInfo.faceImage;
+			}
+			function logout(){
+				plus.storage.removeItem("userInfo");
+				mui.openWindow("login.html","login.html");
+			}
+		</script>
+	</body>
+
+</html>
