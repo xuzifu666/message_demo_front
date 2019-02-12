@@ -1,0 +1,74 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="css/mui.css" rel="stylesheet" />
+		<link href="css/header.css" rel="stylesheet"/>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav header-background">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<a class="mui-icon-right-nav mui-pull-right" style="font-size: 14px;color: white;line-height: 44px;" id="search">搜索</a>
+			<h1 class="mui-title">发现</h1>
+		</header>
+		<div class="mui-content" style="margin-top: 10px;">
+			<div class="mui-input-row">
+			<input type="text" name="friendName" id="friendName" placeholder="请输入查找好友的用户名" class="mui-input-speech mui-input-clear"/>
+			</div>
+		</div>
+		
+		<script src="js/mui.js"></script>
+		<script src="css/app.js"></script>
+		<script type="text/javascript">
+			mui.init();
+			var userInfo = app.getUserGlobalInfo();
+			mui.plusReady(function () {
+					var search = document.getElementById("friendName").value;
+					var button = document.getElementById("search").addEventListener("tap",function(){
+						var serachStr = document.getElementById("friendName").value;
+						var url = app.apiUrl + "/user/friendRef";
+						plus.nativeUI.showWaiting();
+						mui.ajax(url,{
+							data:{
+									userId : userInfo.id,
+									friendName : serachStr
+							},
+							dataType:'json',//服务器返回json格式数据
+							type:'get',//HTTP请求类型
+							timeout:10000,//超时时间设置为10秒；
+							success:function(data){
+								plus.nativeUI.closeWaiting();
+								alert(JSON.stringify(data.data));
+								if(data.status == 200){
+									var res = data.data;
+									document.getElementById("friendName").blur();
+									// app.showToast(res.friendName,"success");
+									mui.openWindow({
+										id:"searchFriendResult.html",
+										url:"searchFriendResult.html",
+										extras:{
+											iconUrl:data.data.iconUrl,
+											friendName:data.data.friendName,
+											friendNickname:data.data.friendNickname
+										}
+									})
+								}else{
+									app.showToast(data.msg,"error");
+								}
+							},
+							error:function(xhr,type,errorThrown){
+								plus.nativeUI.closeWaiting();
+								app.showToast("异常：" + type);
+							}
+						});
+					})
+					
+			})
+		</script>
+	</body>
+
+</html>
