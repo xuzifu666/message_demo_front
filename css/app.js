@@ -8,7 +8,8 @@ var app = {
 	/**
 	 * 文件服务器地址
 	 */
-	imgServerUrl : "http://192.168.0.104:8082/mooc/",
+	// imgServerUrl : "http://192.168.0.104:8082/mooc/",
+	imgServerUrl : "http://47.96.126.221:8082/mooc/",
 	
 	/**
 	 * 验证字符串是否是空
