@@ -23,7 +23,7 @@
 			<br/>
 			<ul class="mui-table-view">
 				<li class="mui-table-view-cell mui-media">
-					<a href="javascript:;">
+					<a href="javascript:;" id="discover">
 						<img class="mui-media-object mui-pull-left" src="image/addfriends.png" style="max-width: 24px;height: 24px;">
 						<div class="mui-media-body" style="line-height: 24px;">
 							<span style="margin-left: 7px;">发现</span>
@@ -42,7 +42,12 @@
 		</div>
 		<script src="js/mui.js"></script>
 		<script type="text/javascript">
-			mui.init()
+			mui.init();
+			mui.plusReady(function () {
+			   document.getElementById("discover").addEventListener("tap",function(){
+					mui.openWindow("searchFriend.html","searchFriend.html");
+			   });
+			})
 		</script>
 	</body>
 
