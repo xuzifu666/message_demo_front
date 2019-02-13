@@ -3,7 +3,7 @@ var app = {
 	/**
 	 * api服务器地址
 	 */
-	apiUrl : "http://192.168.0.100:8080/",
+	apiUrl : "http://192.168.0.102:8080/",
 	// apiUrl : "http://c43c7j.natappfree.cc/",
 	/**
 	 * 文件服务器地址
