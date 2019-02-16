@@ -51,6 +51,95 @@
 					loadingFriendRequests();
 				});
 				loadingFriendRequests();
+				// 添加自定义事件，刷新好友请求，初始化websocket
+				window.addEventListener("refresh", function(){
+					loadingFriendRequests();
+					CHAT.init();
+				});
+				var userInfo = app.getUserGlobalInfo();
+				
+				window.CHAT = {
+					socket:null,
+					init:function(){
+						if(window.WebSocket){
+							if(CHAT.socket != null && CHAT.socket != undefined && CHAT.socket.readyState == WebSocket.OPEN){
+								return false;
+							}
+							CHAT.socket = new WebSocket(app.nettyServerUrl);
+							CHAT.socket.onopen = CHAT.wsopen;
+							CHAT.socket.onclose = CHAT.wsclose;
+							CHAT.socket.onerror = CHAT.wserror;
+							CHAT.socket.onmessage = CHAT.wsmessage;
+						}
+					},
+					wsopen:function(){
+						console.log("websocket连接已建立...");
+						var userInfo = app.getUserGlobalInfo();
+						// 构建ChatMsg
+						var chatMsg = new app.ChatMsg(userInfo.id, null, null, null);
+						// 构建DataContent
+						var dataContent = new app.DataContent(app.LOGIN_MSG, chatMsg, null);
+						// 发送websocket
+						CHAT.chat(JSON.stringify(dataContent));
+					},
+					wsclose: function() {
+						console.log("连接关闭...");
+					},
+					wserror: function(e) {
+						console.log("发生错误..." + JSON.stringify(e));
+					},
+					wsmessage:function(e){
+						console.log("接受到消息s：" + e.data);
+						// var wsWebview = plus.webview.getWebviewById("chatting.html");
+						// wsWebview.evalJS("CHAT.chat('" + JSON.stringify(dataContent) + "')");
+						// wsWebview.evalJS("receiveMsg('" + e.data + "')");
+						// 转换DataContent为对象
+						var dataContent = JSON.parse(e.data);
+						var action = dataContent.action;
+						if (action === app.PULL_FRIEND) {
+							fetchContactList();
+							return false;						
+						}
+						
+						// 如果不是重新拉取好友列表，则获取聊天消息模型，渲染接收到的聊天记录
+						var chatMsg = dataContent.chatMsg;
+						var msg = chatMsg.msg;
+						var friendUserId = chatMsg.from;
+						var myId = chatMsg.to;
+						
+						// 调用聊天webview的receiveMsg方法
+	//					var chatWebview = plus.webview.getWebviewById("chatting-180718GA2ZM9N5S8");
+						var chatWebview = plus.webview.getWebviewById("chatting.html" + friendUserId);
+						var isRead = true;	// 设置消息的默认状态为已读
+						if (chatWebview != null) {
+							chatWebview.evalJS("receiveMsg('" + msg + "')");
+							chatWebview.evalJS("resizeScreen()");
+						} else {
+							isRead = false;	// chatWebview 聊天页面没有打开，标记消息未读状态
+						}
+						
+					},
+					chat: function(msg) {
+					
+					// 如果当前websocket的状态是已打开，则直接发送， 否则重连
+					if (CHAT.socket != null 
+							&& CHAT.socket != undefined  
+							&& CHAT.socket.readyState == WebSocket.OPEN) {
+							CHAT.socket.send(msg);
+					} else {
+						// 重连websocket
+						CHAT.init();
+						setTimeout("CHAT.reChat('" + msg + "')", "1000");
+					}
+					// 渲染快照列表进行展示
+					// loadingChatSnapshot();
+					},
+					reChat: function(msg) {
+						console.log("消息重新发送...");
+						CHAT.socket.send(msg);
+					}
+				}
+				
 			});
 			
 			// 加载好友请求记录列表

@@ -79,7 +79,17 @@
 				}
 				plus.webview.show(tabviews[idx].pageId);
 			});
-		})
+			// 延时加载
+			setTimeout("initData()", "1000");
+		});
+		// 预加载
+		function initData() {
+			var chatList = plus.webview.getWebviewById("chatList.html");
+			mui.fire(chatList, "refresh");
+			
+// 			var imooc_me = plus.webview.getWebviewById("imooc-me.html");
+// 			mui.fire(imooc_me, "refresh");
+		}
 	</script>
 </body>
 </html>
